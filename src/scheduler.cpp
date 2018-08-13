@@ -64,8 +64,7 @@ Scheduler::Scheduler(int iteraciones, int parametro1, float probabilidad, float 
 }
 
 int Scheduler::leerInstancia(std::string instancia){
-    int e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12,
-    e13, test;
+    int e1, e2, e3, e4, e5, e6, e7, test;
     int idCounter = 1;
     int urgentCounter = 0;
     int palliativeCounter = 0;
@@ -75,21 +74,19 @@ int Scheduler::leerInstancia(std::string instancia){
         std::cout << "Error al leer la instancia \n";
         return 1;
     }
-    archivo >> e1 >> e2 >> e3 >> e4 >> e5 >> e6 >> e7;
+    archivo >> e1 >> e2 >> e6 >> e7;
     this -> dias = e1;
-    this -> diasTrabajo = e2;
-    this -> turnos = e3;
-    this -> tiempo = e4;
+    //this -> diasTrabajo = e2;
+    //this -> turnos = e3;
+    this -> tiempo = e2;
     this -> cantidadMaquina1 = e6;
     this -> cantidadMaquina2 = e7;
 
     while(archivo >> test){
         for(int i = 0; i < test; i++){
-            archivo >> e1 >> e2 >> e3 >> e4 >> e5 >> e6 >> e7 >> e8
-            >> e9 >> e10 >> e11 >> e12 >> e13;
+            archivo >> e1 >> e2 >> e3 >> e4 >> e5 >> e6 >> e7;
 
-            Paciente paciente(idCounter, e1, e2, e3, e4, e5, e6, e7, e8,
-                e9, e10, e11, e12, e13, dias);
+            Paciente paciente(idCounter, e1, e2, e3, e4, e5, e6, e7, dias);
             pacientes.push_back(paciente);
             if(e1 == 1){
                 urgentCounter++;

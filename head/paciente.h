@@ -14,7 +14,6 @@ public:
     int tipoMaquina;
     int tiempoPrimeraSesion;
     int tiempoSesion;
-    int disponibilidad[5];
     int sesionesRestantes;
     std::vector<int> schedulePaciente;
     int tiempoEspera;
@@ -22,8 +21,7 @@ public:
     int fin;
 
     Paciente(int ide, int categor, int rel, int du, int ses,
-            int interrup, int tipoMaquina, int tiempoPS,
-            int tiempoS, int a1, int a2, int a3, int a4, int a5, int dias);
+            int interrup, int tipoMaquina, int tiempoS, int dias);
 
 };
 
