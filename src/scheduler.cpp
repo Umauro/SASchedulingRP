@@ -188,38 +188,76 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
 int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
     bool flag;
     bool primera;
-    for(int i = (dias - 1) ; i > release; i--){
-        flag = true;
-        primera = true;
-        for(int j = i; j < dias; j ++){
-            if(primera){
-                if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
-                    flag = false;
-                    break;
-                }
-                if(compPrimeraCapacidad(j, paciente, capacidades)){
-                    primera = false;
+    if(due > dias){
+        for(int i = (dias - 1) ; i > release; i--){
+            flag = true;
+            primera = true;
+            for(int j = i; j < dias; j ++){
+                if(primera){
+                    if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
+                        flag = false;
+                        break;
+                    }
+                    if(compPrimeraCapacidad(j, paciente, capacidades)){
+                        primera = false;
+                    }
+                    else{
+                        flag = false;
+                        break;
+                    }
                 }
                 else{
-                    flag = false;
-                    break;
+                    if(j % 7 == 5 || j % 7 == 6){
+                        continue;
+                    }
+                    if(compCapacidad(j, paciente, capacidades)){
+                        primera = false;
+                    }
+                    else{
+                        flag = false;
+                        break;
+                    }
                 }
             }
-            else{
-                if(j % 7 == 5 || j % 7 == 6){
-                    continue;
-                }
-                if(compCapacidad(j, paciente, capacidades)){
-                    primera = false;
-                }
-                else{
-                    flag = false;
-                    break;
-                }
+            if(flag){
+                return i;
             }
         }
-        if(flag){
-            return i;
+    }
+    else{
+        for(int i = (due - 1) ; i > release; i--){
+            flag = true;
+            primera = true;
+            for(int j = i; j < dias; j ++){
+                if(primera){
+                    if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
+                        flag = false;
+                        break;
+                    }
+                    if(compPrimeraCapacidad(j, paciente, capacidades)){
+                        primera = false;
+                    }
+                    else{
+                        flag = false;
+                        break;
+                    }
+                }
+                else{
+                    if(j % 7 == 5 || j % 7 == 6){
+                        continue;
+                    }
+                    if(compCapacidad(j, paciente, capacidades)){
+                        primera = false;
+                    }
+                    else{
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            if(flag){
+                return i;
+            }
         }
     }
     //std::cout << "id no asignado: " << paciente.id << "\n";
@@ -269,10 +307,11 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
 int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
     bool flag;
     bool primera;
-    for(int i = (due - 1) ; i > release; i++){
+    for(int i = (due - 1) ; i > release; i--){
         flag = true;
         primera = true;
         for(int j = i; j < i + paciente.sesiones; j ++){
+            //std::cout << "j: "<<j <<" i:"<< i<<  "\n";
             if(primera){
                 if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
                     flag = false;
@@ -420,9 +459,19 @@ void Scheduler::constructorSolucion(){
     std::sort(pacientes.begin(), pacientes.end(), sortComparator());
     int largoLista = (cantidadMaquina1+cantidadMaquina2)*dias;
     capacidadMaquinas = std::vector<int>(largoLista, tiempo);
+    std::random_device rd;
+    std::mt19937 generadora(rd());
+    std::uniform_real_distribution<> proba(0,1.0);
+    float probabilidad;
     for(auto &i:pacientes){
-        //ASAP(i, capacidadMaquinas, asignados, noAsignados);
-        JIP(i, capacidadMaquinas, asignados, noAsignados);
+        probabilidad = proba(generadora);
+        //std::cout << probabilidad << "\n";
+        if(probabilidad< 0.8){
+            ASAP(i, capacidadMaquinas, asignados, noAsignados);
+        }
+        else{
+            JIP(i, capacidadMaquinas, asignados, noAsignados);
+        }
     }
     mejorSolucion = funcionObjetivo();
 }

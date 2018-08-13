@@ -66,7 +66,7 @@ $(OBJDIR):
 
 .PHONY: run
 run:
-	./$(EXEC) $(INSTANCIA) $(ITER) $(PARAM1) $(PARAMPROB) $(TEMP) $(MULTI) $(ITERTEMP) >> output.csv
+	./$(EXEC) $(INSTANCIA) $(ITER) $(PARAM1) $(PARAMPROB) $(TEMP) $(MULTI) $(ITERTEMP)
 
 .PHONY: install
 install:
