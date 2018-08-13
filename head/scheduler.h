@@ -46,10 +46,12 @@ public:
     bool compPrimeraCapacidad(int j, Paciente &paciente, std::vector<int> &capacidades);
     bool compCapacidad(int j, Paciente &paciente, std::vector<int> &capacidades);
     int diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades);
+    int diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due);
     int diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades);
+    int diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due);
     void asignar(int diaAsig, Paciente &paciente, std::vector<int> &capacidades);
     void ASAP(Paciente &paciente, std::vector<int> &capacidades, std::vector<Paciente> &asig, std::vector<Paciente> &noAsig);
-    void JIP(Paciente paciente);
+    void JIP(Paciente &paciente, std::vector<int> &capacidades, std::vector<Paciente> &asig, std::vector<Paciente> &noAsig);
     float funcionObjetivo();
     float funcionObjetivo(std::vector<Paciente> candidato);
     void constructorSolucion();
