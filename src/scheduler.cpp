@@ -351,18 +351,22 @@ void Scheduler::recalculador(std::vector<int> &capacidades, Paciente &paciente){
     //Se actualizará el contador de capacidad de las máquinas desde el inicio al
     //fin del tratamiento de un paciente.
     //Se utiliza cuando se saca un paciente de la lista de asignados
+    int counter = 0;
     if(paciente.tipoMaquina == 2){
         capacidades[paciente.inicio + dias] += (paciente.tiempoSesion + paciente.tiempoPrimeraSesion);
-        for(int i = paciente.inicio + 1; i < paciente.fin + 1; i++){
+        counter++;
+        for(int i = paciente.inicio + 1; i < paciente.fin; i++){
             if(i % 7 == 5 || i % 7 == 6){
                 continue;
             }
             capacidades[i + dias] += paciente.tiempoSesion;
+            counter++;
         }
+        //std::cout << "Counter: " << counter << " Sesiones: " << paciente.sesiones << " Release: "<< paciente.release <<"\n";
     }
     else{
         capacidades[paciente.inicio] += (paciente.tiempoSesion + paciente.tiempoPrimeraSesion);
-        for(int i = paciente.inicio + 1; i < paciente.fin + 1; i++){
+        for(int i = paciente.inicio + 1; i < paciente.fin; i++){
             if(i % 7 == 5 || i % 7 == 6){
                 continue;
             }

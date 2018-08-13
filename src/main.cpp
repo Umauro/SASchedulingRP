@@ -18,18 +18,18 @@ int main(int args, char **argv){
     };
     scheduler.constructorSolucion();
     //scheduler.printSolucion();
-    //std::cout << "\nAsignados: " << scheduler.asignados.size() << "\n";
-    //std::cout << "No Asignados: " << scheduler.noAsignados.size() << "\n";
-    //std::cout << "Avg waiting time: " << scheduler.funcionObjetivo() <<"\n";
-    //scheduler.metricas();
-    //std::cout << "\n";
+    std::cout << "\nAsignados: " << scheduler.asignados.size() << "\n";
+    std::cout << "No Asignados: " << scheduler.noAsignados.size() << "\n";
+    std::cout << "Avg waiting time: " << scheduler.funcionObjetivo() <<"\n";
+    scheduler.metricas();
+    std::cout << "\n";
     scheduler.localSearch();
     //scheduler.printSolucion();
-    //std::cout << "Asignados: " << scheduler.asignados.size() << "\n";
-    //std::cout << "No Asignados: " << scheduler.noAsignados.size() << "\n";
-    //std::cout << "Avg waiting time: " << scheduler.funcionObjetivo() << "\n";
+    std::cout << "Asignados: " << scheduler.asignados.size() << "\n";
+    std::cout << "No Asignados: " << scheduler.noAsignados.size() << "\n";
+    std::cout << "Avg waiting time: " << scheduler.funcionObjetivo() << "\n";
+    scheduler.metricas();
     //std::cout << scheduler.funcionObjetivo() << " " << scheduler.asignados.size() << " ";
-    //scheduler.metricas();
-    scheduler.debugger();
+    //scheduler.debugger();
     return 0;
 }
