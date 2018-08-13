@@ -57,5 +57,6 @@ public:
     void recalculador(std::vector<int> &capacidades, Paciente &paciente);
     void localSearch();
     void printSolucion();
+    void debugger();
 };
 #endif

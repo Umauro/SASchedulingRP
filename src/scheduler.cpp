@@ -156,7 +156,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
         primera = true;
         for(int j = i; j < dias; j ++){
             if(primera){
-                if(j % 5 == 4){
+                if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
                     flag = false;
                     break;
                 }
@@ -169,6 +169,9 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                 }
             }
             else{
+                if(j % 7 == 5 || j % 7 == 6){
+                    continue;
+                }
                 if(compCapacidad(j, paciente, capacidades)){
                     primera = false;
                 }
@@ -193,7 +196,7 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
         primera = true;
         for(int j = i; j < i + paciente.sesiones; j ++){
             if(primera){
-                if(j % 5 == 4){
+                if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
                     flag = false;
                     break;
                 }
@@ -206,6 +209,9 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                 }
             }
             else{
+                if(j % 7 == 6 || j % 7 == 0){
+                    continue;
+                }
                 if(compCapacidad(j, paciente, capacidades)){
                     primera = false;
                 }
@@ -232,6 +238,9 @@ void Scheduler::asignar(int diaAsig, Paciente &paciente, std::vector<int> &capac
             paciente.fin = j; //Se guarda el índice del fin
             break;
         }
+        if(j % 7 == 5 || j % 7 == 6){
+            continue;
+        }
         paciente.schedulePaciente[j] = 1;
         paciente.tiempoEspera = diaAsig - (paciente.release -1);
         contador++;
@@ -253,6 +262,9 @@ void Scheduler::asignar(int diaAsig, Paciente &paciente, std::vector<int> &capac
                 capacidades[j] -= paciente.tiempoSesion;
             }
         }
+    }
+    if(paciente.fin == -1){
+        paciente.fin = dias - 1;
     }
 }
 
@@ -328,11 +340,11 @@ void Scheduler::metricas(){
             radical += 1;
         }
     }
-    std::cout << (urgent/cantidadUrgent) << " " << (palliative/cantidadPalliative) << " " << (radical/cantidadRadical) << " " << ((urgent+palliative+radical)/pacientes.size()) <<"\n";
-    //std::cout << "Waiting urgent: " << (urgent/cantidadUrgent) << "% \n";
-    //std::cout << "Waiting palliative: " << (palliative/cantidadPalliative) << "% \n";
-    //std::cout << "Waiting radical: " << (radical/cantidadRadical) << "% \n";
-    //std::cout << "Total: " << ((urgent+palliative+radical)/pacientes.size()) << "% \n";
+    //std::cout << (urgent/cantidadUrgent) << " " << (palliative/cantidadPalliative) << " " << (radical/cantidadRadical) << " " << ((urgent+palliative+radical)/pacientes.size()) <<"\n";
+    std::cout << "Waiting urgent: " << (urgent/cantidadUrgent) << "% \n";
+    std::cout << "Waiting palliative: " << (palliative/cantidadPalliative) << "% \n";
+    std::cout << "Waiting radical: " << (radical/cantidadRadical) << "% \n";
+    std::cout << "Total: " << ((urgent+palliative+radical)/pacientes.size()) << "% \n";
 }
 
 void Scheduler::recalculador(std::vector<int> &capacidades, Paciente &paciente){
@@ -342,14 +354,22 @@ void Scheduler::recalculador(std::vector<int> &capacidades, Paciente &paciente){
     if(paciente.tipoMaquina == 2){
         capacidades[paciente.inicio + dias] += (paciente.tiempoSesion + paciente.tiempoPrimeraSesion);
         for(int i = paciente.inicio + 1; i < paciente.fin + 1; i++){
+            if(i % 7 == 5 || i % 7 == 6){
+                continue;
+            }
             capacidades[i + dias] += paciente.tiempoSesion;
         }
     }
     else{
         capacidades[paciente.inicio] += (paciente.tiempoSesion + paciente.tiempoPrimeraSesion);
         for(int i = paciente.inicio + 1; i < paciente.fin + 1; i++){
+            if(i % 7 == 5 || i % 7 == 6){
+                continue;
+            }
             capacidades[i] += paciente.tiempoSesion;
+            //std::cout << i << " " << paciente.fin << "\n";
         }
+
     }
     //Reseteo del paciente que fue sacado
     paciente.schedulePaciente = std::vector<int>(dias, 0);
@@ -436,7 +456,7 @@ void Scheduler::localSearch(){
                 noAsignados = noAsignadosActual;
                 capacidadMaquinas = capacidadActual;
             }
-            std::cout << mejorSolucion << "\n";
+            //std::cout << mejorSolucion << "\n";
         }
         temp = temp * multi;
         if(temp < 0.00001){
@@ -458,32 +478,44 @@ void Scheduler::printSolucion(){
         for(unsigned int j = 0; j < i.schedulePaciente.size();j++){
             counter++;
             std::cout << i.schedulePaciente[j];
-            if(counter % diasTrabajo == 0){
+            if(counter % 7 == 0){
                 std::cout << " ";
             }
         }
         std::cout << " \n";
+        counter = 0;
     }
     for(auto &i:noAsignados){
         std::cout << i.id <<":  ";
         for(unsigned int j = 0; j < i.schedulePaciente.size();j++){
             counter++;
             std::cout << i.schedulePaciente[j];
-            if(counter % diasTrabajo == 0){
+            if(counter % 7 == 0){
                 std::cout << " ";
             }
         }
         std::cout << " \n";
+        counter = 0;
     }
     std::cout << "\n";
     std::cout << "\n" << "Capacidades Máquinas \n";
     counter = 0;
     for(auto &i: capacidadMaquinas){
-        if(counter % dias == 0){
+        if(counter % 7 == 0){
             std::cout << "\n";
+        }
+        if(counter == dias){
+            counter = 0;
+            std::cout << "\n  Máquina tipo 2 \n";
         }
         std::cout << i << " ";
         counter++;
     }
     std::cout << "\n";
+}
+
+void Scheduler::debugger(){
+    for(auto &i: asignados){
+        std::cout << i.release << " " << i.inicio <<" "<<i.tiempoEspera << "\n";
+    }
 }

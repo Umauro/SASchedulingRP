@@ -30,5 +30,6 @@ int main(int args, char **argv){
     //std::cout << "Avg waiting time: " << scheduler.funcionObjetivo() << "\n";
     //std::cout << scheduler.funcionObjetivo() << " " << scheduler.asignados.size() << " ";
     //scheduler.metricas();
+    scheduler.debugger();
     return 0;
 }
