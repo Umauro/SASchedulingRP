@@ -370,7 +370,7 @@ void Scheduler::localSearch(){
     std::uniform_real_distribution<> prob(0,1.0);
 
     // Para guardar la solución actual
-    int solucionActual = mejorSolucion;
+    float solucionActual = mejorSolucion;
     std::vector<Paciente> asignadosActual = asignados;
     std::vector<Paciente> noAsignadosActual = noAsignados;
     std::vector<int> capacidadActual = capacidadMaquinas;
@@ -405,7 +405,6 @@ void Scheduler::localSearch(){
                 //std::cout<<"Por asignar: " << porAsignar.release << " " << porAsignar.sesiones << "\n";
                 ASAP(porAsignar, nuevaCapacidad, nuevoAsignados, nuevoNoAsignados);
             }
-
             fitNuevo = funcionObjetivo(nuevoAsignados);
             delta = solucionActual - fitNuevo;
             //std::cout << delta << "\n";
@@ -437,9 +436,9 @@ void Scheduler::localSearch(){
                 noAsignados = noAsignadosActual;
                 capacidadMaquinas = capacidadActual;
             }
+            std::cout << mejorSolucion << "\n";
         }
         temp = temp * multi;
-        //std::cout << temp << "\n";
         if(temp < 0.00001){
             //std::cout << "RECALENTAR!\n";
             temp = 1;
