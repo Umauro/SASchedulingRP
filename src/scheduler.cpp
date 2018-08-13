@@ -191,7 +191,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
 int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
     bool flag;
     bool primera;
-    for(int i = (due - 1) ; i > release; i--){
+    for(int i = (dias - 1) ; i > release; i--){
         flag = true;
         primera = true;
         for(int j = i; j < dias; j ++){
@@ -272,7 +272,7 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
 int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
     bool flag;
     bool primera;
-    for(int i = (due - 1) ; i < release; i++){
+    for(int i = (due - 1) ; i > release; i++){
         flag = true;
         primera = true;
         for(int j = i; j < i + paciente.sesiones; j ++){
@@ -382,6 +382,7 @@ void Scheduler::JIP(Paciente &paciente, std::vector<int> &capacidades, std::vect
     int diaAsig = 0;
     if(paciente.sesiones > (dias - due)){
         diaAsig = diaAsigIncompleta(release, paciente, capacidades, due);
+        //std::cout << diaAsig << "\n";
         if(diaAsig){
             asignar(diaAsig, paciente, capacidades);
             asig.push_back(paciente);
