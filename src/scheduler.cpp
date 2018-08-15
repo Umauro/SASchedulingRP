@@ -153,19 +153,38 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
         primera = true;
         for(int j = i; j < dias; j ++){
             if(primera){
-                if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
+                /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                 debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                if(paciente.sesiones < 6){
+                    if(5 - paciente.sesiones() > (j % 7)){
+                        flag = false;
+                        break;
+                    }
+                }
+                /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                if(paciente.categoria != 1){
+                    if(j % 7 == 4){
+                        flag = false;
+                        break;
+                    }
+                }
+                /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                if(j % 7 == 5 || j % 7 == 6){
                     flag = false;
                     break;
                 }
+                /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
                     primera = false;
                 }
+                /* Si no, se debe empezar con otro día*/
                 else{
                     flag = false;
                     break;
                 }
             }
             else{
+                /*debo implementar un contador de sesiones*/
                 if(j % 7 == 5 || j % 7 == 6){
                     continue;
                 }
@@ -194,13 +213,31 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
             primera = true;
             for(int j = i; j < dias; j ++){
                 if(primera){
-                    if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
+                    /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                     debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                    if(paciente.sesiones < 6){
+                        if(5 - paciente.sesiones() > (j % 7)){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                    if(paciente.categoria != 1){
+                        if(j % 7 == 4){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                    if(j % 7 == 5 || j % 7 == 6){
                         flag = false;
                         break;
                     }
+                    /* Si es 1, es posible asignar la primera sesión en el día j*/
                     if(compPrimeraCapacidad(j, paciente, capacidades)){
                         primera = false;
                     }
+                    /* Si no, se debe empezar con otro día*/
                     else{
                         flag = false;
                         break;
@@ -230,13 +267,31 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
             primera = true;
             for(int j = i; j < dias; j ++){
                 if(primera){
-                    if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
+                    /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                     debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                    if(paciente.sesiones < 6){
+                        if(5 - paciente.sesiones() > (j % 7)){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                    if(paciente.categoria != 1){
+                        if(j % 7 == 4){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                    if(j % 7 == 5 || j % 7 == 6){
                         flag = false;
                         break;
                     }
+                    /* Si es 1, es posible asignar la primera sesión en el día j*/
                     if(compPrimeraCapacidad(j, paciente, capacidades)){
                         primera = false;
                     }
+                    /* Si no, se debe empezar con otro día*/
                     else{
                         flag = false;
                         break;
@@ -271,13 +326,31 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
         primera = true;
         for(int j = i; j < i + paciente.sesiones; j ++){
             if(primera){
-                if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
+                /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                 debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                if(paciente.sesiones < 6){
+                    if(5 - paciente.sesiones() > (j % 7)){
+                        flag = false;
+                        break;
+                    }
+                }
+                /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                if(paciente.categoria != 1){
+                    if(j % 7 == 4){
+                        flag = false;
+                        break;
+                    }
+                }
+                /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                if(j % 7 == 5 || j % 7 == 6){
                     flag = false;
                     break;
                 }
+                /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
                     primera = false;
                 }
+                /* Si no, se debe empezar con otro día*/
                 else{
                     flag = false;
                     break;
@@ -313,13 +386,31 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
         for(int j = i; j < i + paciente.sesiones; j ++){
             //std::cout << "j: "<<j <<" i:"<< i<<  "\n";
             if(primera){
-                if(j % 7 == 4 || j % 7 == 5 || j % 7 == 6){
+                /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                 debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                if(paciente.sesiones < 6){
+                    if(5 - paciente.sesiones() > (j % 7)){
+                        flag = false;
+                        break;
+                    }
+                }
+                /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                if(paciente.categoria != 1){
+                    if(j % 7 == 4){
+                        flag = false;
+                        break;
+                    }
+                }
+                /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                if(j % 7 == 5 || j % 7 == 6){
                     flag = false;
                     break;
                 }
+                /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
                     primera = false;
                 }
+                /* Si no, se debe empezar con otro día*/
                 else{
                     flag = false;
                     break;
