@@ -629,11 +629,11 @@ void Scheduler::metricas(){
             radical += 1;
         }
     }
-    //std::cout << (urgent/cantidadUrgent) << " " << (palliative/cantidadPalliative) << " " << (radical/cantidadRadical) << " " << ((urgent+palliative+radical)/pacientes.size()) <<"\n";
-    std::cout << "Waiting urgent: " << (urgent/cantidadUrgent) << "% \n";
-    std::cout << "Waiting palliative: " << (palliative/cantidadPalliative) << "% \n";
-    std::cout << "Waiting radical: " << (radical/cantidadRadical) << "% \n";
-    std::cout << "Total: " << ((urgent+palliative+radical)/pacientes.size()) << "% \n";
+    std::cout << (urgent/cantidadUrgent) << " " << (palliative/cantidadPalliative) << " " << (radical/cantidadRadical) << " " << ((urgent+palliative+radical)/pacientes.size()) <<"\n";
+    //std::cout << "Waiting urgent: " << (urgent/cantidadUrgent) << "% \n";
+    //std::cout << "Waiting palliative: " << (palliative/cantidadPalliative) << "% \n";
+    //std::cout << "Waiting radical: " << (radical/cantidadRadical) << "% \n";
+    //std::cout << "Total: " << ((urgent+palliative+radical)/pacientes.size()) << "% \n";
 }
 
 void Scheduler::recalculador(std::vector<int> &capacidades, Paciente &paciente){
