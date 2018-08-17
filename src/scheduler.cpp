@@ -594,6 +594,10 @@ float Scheduler::funcionObjetivo(std::vector<Paciente> candidato){
 }
 
 void Scheduler::constructorSolucion(){
+    //Reseteo de las cosas por defecto//
+    asignados = std::vector<Paciente>();
+    noAsignados = std::vector<Paciente>();
+
     std::sort(pacientes.begin(), pacientes.end(), sortComparator());
     int largoLista = (cantidadMaquina1+cantidadMaquina2)*dias;
     capacidadMaquinas = std::vector<int>(largoLista, tiempo);
@@ -629,11 +633,11 @@ void Scheduler::metricas(){
             radical += 1;
         }
     }
-    //std::cout << (urgent/cantidadUrgent) << " " << (palliative/cantidadPalliative) << " " << (radical/cantidadRadical) << " " << ((urgent+palliative+radical)/pacientes.size()) <<"\n";
-    std::cout << "Waiting urgent: " << (urgent/cantidadUrgent) << "% \n";
-    std::cout << "Waiting palliative: " << (palliative/cantidadPalliative) << "% \n";
-    std::cout << "Waiting radical: " << (radical/cantidadRadical) << "% \n";
-    std::cout << "Total: " << ((urgent+palliative+radical)/pacientes.size()) << "% \n";
+    std::cout << (urgent/cantidadUrgent) << " " << (palliative/cantidadPalliative) << " " << (radical/cantidadRadical) << " " << ((urgent+palliative+radical)/pacientes.size()) <<"\n";
+    //std::cout << "Waiting urgent: " << (urgent/cantidadUrgent) << "% \n";
+    //std::cout << "Waiting palliative: " << (palliative/cantidadPalliative) << "% \n";
+    //std::cout << "Waiting radical: " << (radical/cantidadRadical) << "% \n";
+    //std::cout << "Total: " << ((urgent+palliative+radical)/pacientes.size()) << "% \n";
 }
 
 void Scheduler::recalculador(std::vector<int> &capacidades, Paciente &paciente){

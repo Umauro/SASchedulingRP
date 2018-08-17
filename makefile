@@ -43,8 +43,8 @@ FIND = find
 CP = cp
 
 # Parameters
-INSTANCIA = instances/CL_60_20_7.rad
-ITER = 500
+INSTANCIA = instances/CL_30_10_7.rad
+ITER = 100
 PARAM1 = 2
 PARAMPROB = 0.4
 TEMP = 1
