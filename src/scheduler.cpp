@@ -160,7 +160,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                 /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
                  debe ser tal que alcance a tener todas sus sesiones el mismo día*/
                 if(paciente.sesiones < 6){
-                    if(5 - paciente.sesiones > (j % 7)){
+                    if(5 - paciente.sesiones < (j % 7)){
                         flag = false;
                         break;
                     }
@@ -231,7 +231,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                     /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
                      debe ser tal que alcance a tener todas sus sesiones el mismo día*/
                     if(paciente.sesiones < 6){
-                        if(5 - paciente.sesiones > (j % 7)){
+                        if(5 - paciente.sesiones < (j % 7)){
                             flag = false;
                             break;
                         }
@@ -293,7 +293,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                     /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
                      debe ser tal que alcance a tener todas sus sesiones el mismo día*/
                     if(paciente.sesiones < 6){
-                        if(5 - paciente.sesiones > (j % 7)){
+                        if(5 - paciente.sesiones < (j % 7)){
                             flag = false;
                             break;
                         }
@@ -361,7 +361,7 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                 /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
                  debe ser tal que alcance a tener todas sus sesiones el mismo día*/
                 if(paciente.sesiones < 6){
-                    if(5 - paciente.sesiones > (j % 7)){
+                    if(5 - paciente.sesiones < (j % 7)){
                         flag = false;
                         break;
                     }
@@ -430,7 +430,7 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                 /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
                  debe ser tal que alcance a tener todas sus sesiones el mismo día*/
                 if(paciente.sesiones < 6){
-                    if(5 - paciente.sesiones > (j % 7)){
+                    if(5 - paciente.sesiones < (j % 7)){
                         flag = false;
                         break;
                     }
