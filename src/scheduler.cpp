@@ -148,9 +148,13 @@ bool Scheduler::compCapacidad(int j, Paciente &paciente, std::vector<int> &capac
 int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades){
     bool flag;
     bool primera;
+    bool asignable = false;
+    // Contador para ver cuantas sesiones han sido asignadas //
+    int counter;
     for(int i = (release - 1) ; i < dias; i++){
         flag = true;
         primera = true;
+        counter = 0;
         for(int j = i; j < dias; j ++){
             if(primera){
                 /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
@@ -176,6 +180,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                 /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
                     primera = false;
+                    counter++;
                 }
                 /* Si no, se debe empezar con otro día*/
                 else{
@@ -190,14 +195,21 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                 }
                 if(compCapacidad(j, paciente, capacidades)){
                     primera = false;
+                    counter++;
                 }
                 else{
                     flag = false;
                     break;
                 }
             }
+            /* Si se pueden asignar todas las sesiones del paciente se procede a
+                realizar la asignación */
+            if(counter == paciente.sesiones){
+                asignable = true;
+                break;
+            }
         }
-        if(flag){
+        if(flag && asignable){
             return i;
         }
     }
@@ -207,10 +219,13 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
 int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
     bool flag;
     bool primera;
+    bool asignable = false;
+    int counter;
     if(due > dias){
         for(int i = (dias - 1) ; i > release; i--){
             flag = true;
             primera = true;
+            counter = 0;
             for(int j = i; j < dias; j ++){
                 if(primera){
                     /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
@@ -236,6 +251,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                     /* Si es 1, es posible asignar la primera sesión en el día j*/
                     if(compPrimeraCapacidad(j, paciente, capacidades)){
                         primera = false;
+                        counter++;
                     }
                     /* Si no, se debe empezar con otro día*/
                     else{
@@ -249,14 +265,20 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                     }
                     if(compCapacidad(j, paciente, capacidades)){
                         primera = false;
+                        counter++;
                     }
                     else{
                         flag = false;
                         break;
                     }
                 }
+                if(counter == paciente.sesiones){
+                    asignable = true;
+                    break;
+                }
             }
-            if(flag){
+
+            if(flag && asignable){
                 return i;
             }
         }
@@ -265,6 +287,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
         for(int i = (due - 1) ; i > release; i--){
             flag = true;
             primera = true;
+            counter = 0;
             for(int j = i; j < dias; j ++){
                 if(primera){
                     /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
@@ -289,6 +312,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                     }
                     /* Si es 1, es posible asignar la primera sesión en el día j*/
                     if(compPrimeraCapacidad(j, paciente, capacidades)){
+                        counter++;
                         primera = false;
                     }
                     /* Si no, se debe empezar con otro día*/
@@ -302,6 +326,7 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                         continue;
                     }
                     if(compCapacidad(j, paciente, capacidades)){
+                        counter++;
                         primera = false;
                     }
                     else{
@@ -309,8 +334,12 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
                         break;
                     }
                 }
+                if(counter == paciente.sesiones){
+                    asignable = true;
+                    break;
+                }
             }
-            if(flag){
+            if(flag && asignable){
                 return i;
             }
         }
@@ -321,10 +350,13 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
 int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades){
     bool flag;
     bool primera;
+    bool asignable = false;
+    int counter;
     for(int i = (release - 1) ; i < paciente.due; i++){
         flag = true;
         primera = true;
-        for(int j = i; j < i + paciente.sesiones; j ++){
+        counter = 0;
+        for(int j = i; j < dias; j ++){
             if(primera){
                 /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
                  debe ser tal que alcance a tener todas sus sesiones el mismo día*/
@@ -348,6 +380,7 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                 }
                 /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
+                    counter++;
                     primera = false;
                 }
                 /* Si no, se debe empezar con otro día*/
@@ -361,6 +394,7 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                     continue;
                 }
                 if(compCapacidad(j, paciente, capacidades)){
+                    counter++;
                     primera = false;
                 }
                 else{
@@ -368,8 +402,12 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                     break;
                 }
             }
+            if(counter == paciente.sesiones){
+                asignable = true;
+                break;
+            }
         }
-        if(flag){
+        if(flag && asignable){
             return i;
         }
     }
@@ -380,10 +418,13 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
 int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
     bool flag;
     bool primera;
+    bool asignable = false;
+    int counter;
     for(int i = (due - 1) ; i > release; i--){
         flag = true;
         primera = true;
-        for(int j = i; j < i + paciente.sesiones; j ++){
+        counter = 0;
+        for(int j = i; j < dias; j ++){
             //std::cout << "j: "<<j <<" i:"<< i<<  "\n";
             if(primera){
                 /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
@@ -409,6 +450,7 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                 /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
                     primera = false;
+                    counter++;
                 }
                 /* Si no, se debe empezar con otro día*/
                 else{
@@ -422,14 +464,19 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                 }
                 if(compCapacidad(j, paciente, capacidades)){
                     primera = false;
+                    counter++;
                 }
                 else{
                     flag = false;
                     break;
                 }
             }
+            if(counter == paciente.sesiones){
+                asignable = true;
+                break;
+            }
         }
-        if(flag){
+        if(flag && asignable){
             return i;
         }
     }
