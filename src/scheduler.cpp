@@ -764,7 +764,7 @@ void Scheduler::localSearch(){
             noAsignadosActual = noAsignados;
             capacidadActual = capacidadMaquinas;
         }
-        //std::cout << iteracion << " " << mejorSolucion/(100*asignados.size()) << " " << asignados.size() << " \n";
+        //std::cout << iteracion << " " << mejorSolucion<<" " << noAsignados.size()<< "\n";
     }
 }
 

@@ -50,6 +50,7 @@ PARAMPROB = 0.4
 TEMP = 1
 MULTI = 0.8
 ITERTEMP = 70;
+GRASPITER = 50;
 
 # Makefile rules
 .PHONY: all
@@ -66,7 +67,7 @@ $(OBJDIR):
 
 .PHONY: run
 run:
-	./$(EXEC) $(INSTANCIA) $(ITER) $(PARAM1) $(PARAMPROB) $(TEMP) $(MULTI) $(ITERTEMP)
+	./$(EXEC) $(INSTANCIA) $(ITER) $(PARAM1) $(PARAMPROB) $(TEMP) $(MULTI) $(ITERTEMP) $(GRASPITER)
 
 .PHONY: install
 install:
