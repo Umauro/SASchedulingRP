@@ -8,8 +8,7 @@
 
 Paciente::Paciente(int ide, int categor, int rel,
      int du, int ses, int interrup, int tipoM,
-      int tiempoPS, int tiempoS, int a1, int a2, int a3,
-       int a4, int a5, int dias){
+     int tiempoS, int dias){
     this -> id = ide;
     this -> categoria = categor;
     this -> release = rel;
@@ -17,9 +16,9 @@ Paciente::Paciente(int ide, int categor, int rel,
     this -> sesiones = ses;
     this -> interrupciones = interrup;
     this -> tipoMaquina = tipoM;
-    this -> tiempoPrimeraSesion = tiempoPS;
+    this -> tiempoPrimeraSesion = 5;
     this -> tiempoSesion = tiempoS;
-    int disponibilidad[5] = {a1, a2, a3, a4, a5};
+    //int disponibilidad[5] = {a1, a2, a3, a4, a5};
     this ->  sesionesRestantes = ses;
     this -> schedulePaciente = std::vector<int>(dias,0);
     this -> tiempoEspera = -1;

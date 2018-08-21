@@ -64,8 +64,7 @@ Scheduler::Scheduler(int iteraciones, int parametro1, float probabilidad, float 
 }
 
 int Scheduler::leerInstancia(std::string instancia){
-    int e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12,
-    e13, test;
+    int e1, e2, e3, e4, e5, e6, e7, test;
     int idCounter = 1;
     int urgentCounter = 0;
     int palliativeCounter = 0;
@@ -75,21 +74,19 @@ int Scheduler::leerInstancia(std::string instancia){
         std::cout << "Error al leer la instancia \n";
         return 1;
     }
-    archivo >> e1 >> e2 >> e3 >> e4 >> e5 >> e6 >> e7;
+    archivo >> e1 >> e2 >> e6 >> e7;
     this -> dias = e1;
-    this -> diasTrabajo = e2;
-    this -> turnos = e3;
-    this -> tiempo = e4;
+    //this -> diasTrabajo = e2;
+    //this -> turnos = e3;
+    this -> tiempo = e2;
     this -> cantidadMaquina1 = e6;
     this -> cantidadMaquina2 = e7;
 
     while(archivo >> test){
         for(int i = 0; i < test; i++){
-            archivo >> e1 >> e2 >> e3 >> e4 >> e5 >> e6 >> e7 >> e8
-            >> e9 >> e10 >> e11 >> e12 >> e13;
+            archivo >> e1 >> e2 >> e3 >> e4 >> e5 >> e6 >> e7;
 
-            Paciente paciente(idCounter, e1, e2, e3, e4, e5, e6, e7, e8,
-                e9, e10, e11, e12, e13, dias);
+            Paciente paciente(idCounter, e1, e2, e3, e4, e5, e6, e7, dias);
             pacientes.push_back(paciente);
             if(e1 == 1){
                 urgentCounter++;
@@ -151,35 +148,200 @@ bool Scheduler::compCapacidad(int j, Paciente &paciente, std::vector<int> &capac
 int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades){
     bool flag;
     bool primera;
+    bool asignable = false;
+    // Contador para ver cuantas sesiones han sido asignadas //
+    int counter;
     for(int i = (release - 1) ; i < dias; i++){
         flag = true;
         primera = true;
+        counter = 0;
         for(int j = i; j < dias; j ++){
             if(primera){
-                if(j % 5 == 4){
+                /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                 debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                if(paciente.sesiones < 6){
+                    if(5 - paciente.sesiones < (j % 7)){
+                        flag = false;
+                        break;
+                    }
+                }
+                /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                if(paciente.categoria != 1){
+                    if(j % 7 == 4){
+                        flag = false;
+                        break;
+                    }
+                }
+                /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                if(j % 7 == 5 || j % 7 == 6){
                     flag = false;
                     break;
                 }
+                /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
                     primera = false;
+                    counter++;
                 }
+                /* Si no, se debe empezar con otro día*/
                 else{
                     flag = false;
                     break;
                 }
             }
             else{
+                /*debo implementar un contador de sesiones*/
+                if(j % 7 == 5 || j % 7 == 6){
+                    continue;
+                }
                 if(compCapacidad(j, paciente, capacidades)){
                     primera = false;
+                    counter++;
                 }
                 else{
                     flag = false;
                     break;
                 }
             }
+            /* Si se pueden asignar todas las sesiones del paciente se procede a
+                realizar la asignación */
+            if(counter == paciente.sesiones){
+                asignable = true;
+                break;
+            }
         }
-        if(flag){
+        if(flag && asignable){
             return i;
+        }
+    }
+    //std::cout << "id no asignado: " << paciente.id << "\n";
+    return 0;
+}
+int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
+    bool flag;
+    bool primera;
+    bool asignable = false;
+    int counter;
+    if(due > dias){
+        for(int i = (dias - 1) ; i > release; i--){
+            flag = true;
+            primera = true;
+            counter = 0;
+            for(int j = i; j < dias; j ++){
+                if(primera){
+                    /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                     debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                    if(paciente.sesiones < 6){
+                        if(5 - paciente.sesiones < (j % 7)){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                    if(paciente.categoria != 1){
+                        if(j % 7 == 4){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                    if(j % 7 == 5 || j % 7 == 6){
+                        flag = false;
+                        break;
+                    }
+                    /* Si es 1, es posible asignar la primera sesión en el día j*/
+                    if(compPrimeraCapacidad(j, paciente, capacidades)){
+                        primera = false;
+                        counter++;
+                    }
+                    /* Si no, se debe empezar con otro día*/
+                    else{
+                        flag = false;
+                        break;
+                    }
+                }
+                else{
+                    if(j % 7 == 5 || j % 7 == 6){
+                        continue;
+                    }
+                    if(compCapacidad(j, paciente, capacidades)){
+                        primera = false;
+                        counter++;
+                    }
+                    else{
+                        flag = false;
+                        break;
+                    }
+                }
+                if(counter == paciente.sesiones){
+                    asignable = true;
+                    break;
+                }
+            }
+
+            if(flag && asignable){
+                return i;
+            }
+        }
+    }
+    else{
+        for(int i = (due - 1) ; i > release; i--){
+            flag = true;
+            primera = true;
+            counter = 0;
+            for(int j = i; j < dias; j ++){
+                if(primera){
+                    /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                     debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                    if(paciente.sesiones < 6){
+                        if(5 - paciente.sesiones < (j % 7)){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                    if(paciente.categoria != 1){
+                        if(j % 7 == 4){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                    if(j % 7 == 5 || j % 7 == 6){
+                        flag = false;
+                        break;
+                    }
+                    /* Si es 1, es posible asignar la primera sesión en el día j*/
+                    if(compPrimeraCapacidad(j, paciente, capacidades)){
+                        counter++;
+                        primera = false;
+                    }
+                    /* Si no, se debe empezar con otro día*/
+                    else{
+                        flag = false;
+                        break;
+                    }
+                }
+                else{
+                    if(j % 7 == 5 || j % 7 == 6){
+                        continue;
+                    }
+                    if(compCapacidad(j, paciente, capacidades)){
+                        counter++;
+                        primera = false;
+                    }
+                    else{
+                        flag = false;
+                        break;
+                    }
+                }
+                if(counter == paciente.sesiones){
+                    asignable = true;
+                    break;
+                }
+            }
+            if(flag && asignable){
+                return i;
+            }
         }
     }
     //std::cout << "id no asignado: " << paciente.id << "\n";
@@ -188,25 +350,51 @@ int Scheduler::diaAsigIncompleta(int release, Paciente &paciente, std::vector<in
 int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades){
     bool flag;
     bool primera;
+    bool asignable = false;
+    int counter;
     for(int i = (release - 1) ; i < paciente.due; i++){
         flag = true;
         primera = true;
-        for(int j = i; j < i + paciente.sesiones; j ++){
+        counter = 0;
+        for(int j = i; j < dias; j ++){
             if(primera){
-                if(j % 5 == 4){
+                /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                 debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                if(paciente.sesiones < 6){
+                    if(5 - paciente.sesiones < (j % 7)){
+                        flag = false;
+                        break;
+                    }
+                }
+                /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                if(paciente.categoria != 1){
+                    if(j % 7 == 4){
+                        flag = false;
+                        break;
+                    }
+                }
+                /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                if(j % 7 == 5 || j % 7 == 6){
                     flag = false;
                     break;
                 }
+                /* Si es 1, es posible asignar la primera sesión en el día j*/
                 if(compPrimeraCapacidad(j, paciente, capacidades)){
+                    counter++;
                     primera = false;
                 }
+                /* Si no, se debe empezar con otro día*/
                 else{
                     flag = false;
                     break;
                 }
             }
             else{
+                if(j % 7 == 6 || j % 7 == 0){
+                    continue;
+                }
                 if(compCapacidad(j, paciente, capacidades)){
+                    counter++;
                     primera = false;
                 }
                 else{
@@ -214,8 +402,81 @@ int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int>
                     break;
                 }
             }
+            if(counter == paciente.sesiones){
+                asignable = true;
+                break;
+            }
         }
-        if(flag){
+        if(flag && asignable){
+            return i;
+        }
+    }
+    //std::cout << "id no asignado: " << paciente.id << "\n";
+    return 0;
+}
+
+int Scheduler::diaAsigCompleta(int release, Paciente &paciente, std::vector<int> &capacidades, int due){
+    bool flag;
+    bool primera;
+    bool asignable = false;
+    int counter;
+    for(int i = (due - 1) ; i > release; i--){
+        flag = true;
+        primera = true;
+        counter = 0;
+        for(int j = i; j < dias; j ++){
+            //std::cout << "j: "<<j <<" i:"<< i<<  "\n";
+            if(primera){
+                /* Si el paciente tiene 5 sesiones o menos, su primer día de tratamiento
+                 debe ser tal que alcance a tener todas sus sesiones el mismo día*/
+                if(paciente.sesiones < 6){
+                    if(5 - paciente.sesiones < (j % 7)){
+                        flag = false;
+                        break;
+                    }
+                }
+                /*Si el paciente no es de categoría Urgente, no puede partir un viernes*/
+                if(paciente.categoria != 1){
+                    if(j % 7 == 4){
+                        flag = false;
+                        break;
+                    }
+                }
+                /* No se puede partir el tratamiento los días viernes, sábados, o domingos */
+                if(j % 7 == 5 || j % 7 == 6){
+                    flag = false;
+                    break;
+                }
+                /* Si es 1, es posible asignar la primera sesión en el día j*/
+                if(compPrimeraCapacidad(j, paciente, capacidades)){
+                    primera = false;
+                    counter++;
+                }
+                /* Si no, se debe empezar con otro día*/
+                else{
+                    flag = false;
+                    break;
+                }
+            }
+            else{
+                if(j % 7 == 6 || j % 7 == 0){
+                    continue;
+                }
+                if(compCapacidad(j, paciente, capacidades)){
+                    primera = false;
+                    counter++;
+                }
+                else{
+                    flag = false;
+                    break;
+                }
+            }
+            if(counter == paciente.sesiones){
+                asignable = true;
+                break;
+            }
+        }
+        if(flag && asignable){
             return i;
         }
     }
@@ -231,6 +492,9 @@ void Scheduler::asignar(int diaAsig, Paciente &paciente, std::vector<int> &capac
         if(contador == paciente.sesiones){
             paciente.fin = j; //Se guarda el índice del fin
             break;
+        }
+        if(j % 7 == 5 || j % 7 == 6){
+            continue;
         }
         paciente.schedulePaciente[j] = 1;
         paciente.tiempoEspera = diaAsig - (paciente.release -1);
@@ -253,6 +517,9 @@ void Scheduler::asignar(int diaAsig, Paciente &paciente, std::vector<int> &capac
                 capacidades[j] -= paciente.tiempoSesion;
             }
         }
+    }
+    if(paciente.fin == -1){
+        paciente.fin = dias - 1;
     }
 }
 
@@ -283,8 +550,31 @@ void Scheduler::ASAP(Paciente &paciente, std::vector<int> &capacidades, std::vec
     }
 }
 
-void Scheduler::JIP(Paciente paciente){
-    std::cout << "JIP" << "\n";
+void Scheduler::JIP(Paciente &paciente, std::vector<int> &capacidades, std::vector<Paciente> &asig, std::vector<Paciente> &noAsig){
+    int release = paciente.release;
+    int due = paciente.due;
+    int diaAsig = 0;
+    if(paciente.sesiones > (dias - due)){
+        diaAsig = diaAsigIncompleta(release, paciente, capacidades, due);
+        //std::cout << diaAsig << "\n";
+        if(diaAsig){
+            asignar(diaAsig, paciente, capacidades);
+            asig.push_back(paciente);
+        }
+        else{
+            noAsig.push_back(paciente);
+        }
+    }
+    else{
+        diaAsig = diaAsigCompleta(release, paciente, capacidades, due);
+        if(diaAsig){
+            asignar(diaAsig, paciente, capacidades);
+            asig.push_back(paciente);
+        }
+        else{
+            noAsig.push_back(paciente);
+        }
+    }
 }
 
 float Scheduler::funcionObjetivo(){
@@ -304,11 +594,26 @@ float Scheduler::funcionObjetivo(std::vector<Paciente> candidato){
 }
 
 void Scheduler::constructorSolucion(){
+    //Reseteo de las cosas por defecto//
+    asignados = std::vector<Paciente>();
+    noAsignados = std::vector<Paciente>();
+
     std::sort(pacientes.begin(), pacientes.end(), sortComparator());
     int largoLista = (cantidadMaquina1+cantidadMaquina2)*dias;
     capacidadMaquinas = std::vector<int>(largoLista, tiempo);
+    std::random_device rd;
+    std::mt19937 generadora(rd());
+    std::uniform_real_distribution<> proba(0,1.0);
+    float probabilidad;
     for(auto &i:pacientes){
-        ASAP(i, capacidadMaquinas, asignados, noAsignados);
+        probabilidad = proba(generadora);
+        //std::cout << probabilidad << "\n";
+        if(probabilidad< 0.8){
+            ASAP(i, capacidadMaquinas, asignados, noAsignados);
+        }
+        else{
+            JIP(i, capacidadMaquinas, asignados, noAsignados);
+        }
     }
     mejorSolucion = funcionObjetivo();
 }
@@ -339,17 +644,29 @@ void Scheduler::recalculador(std::vector<int> &capacidades, Paciente &paciente){
     //Se actualizará el contador de capacidad de las máquinas desde el inicio al
     //fin del tratamiento de un paciente.
     //Se utiliza cuando se saca un paciente de la lista de asignados
+    int counter = 0;
     if(paciente.tipoMaquina == 2){
         capacidades[paciente.inicio + dias] += (paciente.tiempoSesion + paciente.tiempoPrimeraSesion);
-        for(int i = paciente.inicio + 1; i < paciente.fin + 1; i++){
+        counter++;
+        for(int i = paciente.inicio + 1; i < paciente.fin; i++){
+            if(i % 7 == 5 || i % 7 == 6){
+                continue;
+            }
             capacidades[i + dias] += paciente.tiempoSesion;
+            counter++;
         }
+        //std::cout << "Counter: " << counter << " Sesiones: " << paciente.sesiones << " Release: "<< paciente.release <<"\n";
     }
     else{
         capacidades[paciente.inicio] += (paciente.tiempoSesion + paciente.tiempoPrimeraSesion);
-        for(int i = paciente.inicio + 1; i < paciente.fin + 1; i++){
+        for(int i = paciente.inicio + 1; i < paciente.fin; i++){
+            if(i % 7 == 5 || i % 7 == 6){
+                continue;
+            }
             capacidades[i] += paciente.tiempoSesion;
+            //std::cout << i << " " << paciente.fin << "\n";
         }
+
     }
     //Reseteo del paciente que fue sacado
     paciente.schedulePaciente = std::vector<int>(dias, 0);
@@ -436,7 +753,7 @@ void Scheduler::localSearch(){
                 noAsignados = noAsignadosActual;
                 capacidadMaquinas = capacidadActual;
             }
-            std::cout << mejorSolucion << "\n";
+            //std::cout << mejorSolucion << "\n";
         }
         temp = temp * multi;
         if(temp < 0.00001){
@@ -447,7 +764,7 @@ void Scheduler::localSearch(){
             noAsignadosActual = noAsignados;
             capacidadActual = capacidadMaquinas;
         }
-        //std::cout << iteracion << " " << mejorSolucion/(100*asignados.size()) << " " << asignados.size() << " \n";
+        //std::cout << iteracion << " " << mejorSolucion<<" " << noAsignados.size()<< "\n";
     }
 }
 
@@ -458,32 +775,44 @@ void Scheduler::printSolucion(){
         for(unsigned int j = 0; j < i.schedulePaciente.size();j++){
             counter++;
             std::cout << i.schedulePaciente[j];
-            if(counter % diasTrabajo == 0){
+            if(counter % 7 == 0){
                 std::cout << " ";
             }
         }
         std::cout << " \n";
+        counter = 0;
     }
     for(auto &i:noAsignados){
         std::cout << i.id <<":  ";
         for(unsigned int j = 0; j < i.schedulePaciente.size();j++){
             counter++;
             std::cout << i.schedulePaciente[j];
-            if(counter % diasTrabajo == 0){
+            if(counter % 7 == 0){
                 std::cout << " ";
             }
         }
         std::cout << " \n";
+        counter = 0;
     }
     std::cout << "\n";
     std::cout << "\n" << "Capacidades Máquinas \n";
     counter = 0;
     for(auto &i: capacidadMaquinas){
-        if(counter % dias == 0){
+        if(counter % 7 == 0){
             std::cout << "\n";
+        }
+        if(counter == dias){
+            counter = 0;
+            std::cout << "\n  Máquina tipo 2 \n";
         }
         std::cout << i << " ";
         counter++;
     }
     std::cout << "\n";
+}
+
+void Scheduler::debugger(){
+    for(auto &i: asignados){
+        std::cout << i.release << " " << i.inicio <<" "<<i.tiempoEspera << "\n";
+    }
 }

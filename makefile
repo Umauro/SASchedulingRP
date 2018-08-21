@@ -43,13 +43,14 @@ FIND = find
 CP = cp
 
 # Parameters
-INSTANCIA = instances/CL_60_20_7.rad
-ITER = 500
+INSTANCIA = instances/CL_30_10_7.rad
+ITER = 100
 PARAM1 = 2
 PARAMPROB = 0.4
 TEMP = 1
 MULTI = 0.8
 ITERTEMP = 70;
+GRASPITER = 50;
 
 # Makefile rules
 .PHONY: all
@@ -66,7 +67,7 @@ $(OBJDIR):
 
 .PHONY: run
 run:
-	./$(EXEC) $(INSTANCIA) $(ITER) $(PARAM1) $(PARAMPROB) $(TEMP) $(MULTI) $(ITERTEMP) >> output.csv
+	./$(EXEC) $(INSTANCIA) $(ITER) $(PARAM1) $(PARAMPROB) $(TEMP) $(MULTI) $(ITERTEMP) $(GRASPITER)
 
 .PHONY: install
 install:
