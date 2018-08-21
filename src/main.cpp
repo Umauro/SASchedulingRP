@@ -61,13 +61,14 @@ int main(int args, char **argv){
     std::cout << "\n";
     //scheduler.localSearch();
     //scheduler.printSolucion();
-    //std::cout << "Asignados: " << asignadosBest.size() << "\n";
-    //std::cout << "No Asignados: " << noAsignadosBest.size() << "\n";
-    //std::cout << "Avg waiting time: " << scheduler.funcionObjetivo(asignadosBest) << "\n";
-    //scheduler.metricas();
+
+    std::cout << "Asignados: " << asignadosBest.size() << "\n";
+    std::cout << "No Asignados: " << noAsignadosBest.size() << "\n";
+    std::cout << "Avg waiting time: " << scheduler.funcionObjetivo(asignadosBest) << "\n";
+    scheduler.metricas();
     //std::cout << scheduler.funcionObjetivo() << " " << scheduler.asignados.size() << " ";
     //scheduler.debugger();
-    std::cout << theVerybest << " " << noAsignadosBest.size() << " ";
-    scheduler.metricas();
+    //std::cout << theVerybest << " " << noAsignadosBest.size() << " ";
+    //scheduler.metricas();
     return 0;
 }
